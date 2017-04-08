@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"  
+      xmlns:f="http://java.sun.com/jsf/core"  
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <!-- berechen des geocodes für eingabe über Ort + Straße + Straßenname -->
+
+
+    <h:head>
+        <link href="css/mainPage.css" rel="stylesheet" type="text/css"/>
+        <!--  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.5/css/materialize.min.css" type="text/css"/>  -->
+        <title>Facelet Title</title>
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+        <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvvvVzNoFKVQGYyB_AZpiDkLe7HovcU4g" type="text/javascript"></script>
+
+    </h:head>
+    <h:body>
+
+        <p:layout>
+            <p:layoutUnit position="north">
+                <p:gmap center="48.1550348,13.8330298" zoom="8" type="HYBRID" styleClass="gmap" model="#{mainPageManagedBean.gmapModel}" ></p:gmap>
+            </p:layoutUnit>
+
+
+            <p:layoutUnit position="center">
+                <p:fieldset style="border: 0px" legend="Einsatzort" toggleSpeed="300" toggleable="true">
+
+
+                    <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+
+                    <p:panelGrid style="border: 0px" columns="2">
+                        <h:panelGrid style="border: 0px; column-rule-style: hidden" columns="2" cellpadding="5">
+
+                            <p:outputLabel for="ort" value="Ort: " />
+                            <p:inputMask id="ort"  required="" mask=""/>
+
+                            <p:outputLabel for="straße" value="Straße:" />
+                            <p:inputMask id="straße"   mask=""/>
+
+                            <p:outputLabel for="hausnummer" value="Hausnummer:" />
+                            <p:inputMask id="hausnummer"  mask=""/>
+
+                            <p:commandButton value="Zurücksetzen" type="reset" update="@all"/>
+                            <p:commandButton  value="Speichern" type='submit' >
+                            </p:commandButton>
+                        </h:panelGrid>
+                        <p:panelGrid style="border: 0px" columns="1">
+                            <p:selectCheckboxMenu style="margin-bottom: 15px; margin-top: 15px" label="Einsatzfahrzeuge" >
+                                <f:selectItems ></f:selectItems>
+                            </p:selectCheckboxMenu>
+
+                            <p:selectOneMenu style="min-width: 200px; margin-top: 15px; margin-bottom: 15px">
+                                <f:selectItem itemLabel="Brand"  itemValue="Brand"/>
+                                <f:selectItem itemLabel="Technischer Einsatz" itemValue="Technischer Einsatz"/>
+                            </p:selectOneMenu>
+                        </p:panelGrid>
+                    </p:panelGrid>
+
+
+                </p:fieldset>  
+
+
+
+                <p:fieldset style="border: 0px" id="tracking" legend="Tracking" toggleSpeed="300" toggleable="true">
+                    <p:panelGrid style="border: 0px" id="trackingGrid" columns="3" columnClasses="label,value">
+                        <p:panel style="border: 0px" id="toUpdate"  widgetVar="toUpdate">
+                            <ui:repeat  value="#{maskView.allDevices}" id="trackingRepeat" var="device">
+
+                                <p:outputLabel style="padding-bottom: 20px!important;" value="#{device.name}"/>
+                                <p:inputSwitch  >
+                                    <p:ajax listener="#{maskView.changeTracking(device)}"/>
+                                </p:inputSwitch>
+
+
+                            </ui:repeat>
+                        </p:panel>
+                    </p:panelGrid>
+                </p:fieldset>
+            </p:layoutUnit>
+        </p:layout>
+    </h:body>
+</html>
+
